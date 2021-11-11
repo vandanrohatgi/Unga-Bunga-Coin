@@ -8,7 +8,7 @@ In this project I try to recreate [This awesome series on creating blockchain us
 
 I wanted to learn how blockchains work
 
-# Waht in the God's name is UngaBunga?
+# What in the God's name is UngaBunga?
 
 [Glad to be of service](https://knowyourmeme.com/memes/confused-unga-bunga)
 
