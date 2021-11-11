@@ -12,3 +12,6 @@ I wanted to learn how blockchains work
 
 [Glad to be of service](https://knowyourmeme.com/memes/confused-unga-bunga)
 
+Part1: We create a very basic Blockchain
+Part2: We add Proof-of-Work feature
+Part3: We finally create the UngabungaCoin
