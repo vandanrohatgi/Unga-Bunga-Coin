@@ -1,6 +1,5 @@
 import hashlib
 from datetime import datetime
-from time import sleep
 
 class Transaction():
     def __init__(self,sender,receiver,amount):
@@ -36,7 +35,7 @@ class BlockChain():
         # Genesis block is the first block of every block chain and can contain random data
         first=Block('9/11/2021','Genesis Block','0001')
         self.chain=[first]
-        self.difficulty=2 # The target that each block hash should follow, Higher the difficulty longer it will take to mine each block
+        self.difficulty=5 # The target that each block hash should follow, Higher the difficulty longer it will take to mine each block
         self.pending=[]
         self.reward=100
 
@@ -44,7 +43,7 @@ class BlockChain():
     def getLatestBlock(self):
         return(self.chain[-1])
 
-    def minePendingTransactions(self,rewardAddress):
+    def minePendingTransactions(self,rewardAddress):                              #Takes transactions from the pending list, mines 1 block, adds it to the chain and reward the miner
         block=Block(datetime.today().strftime('%d-%m-%Y-%H:%M:%S'),self.pending)
         block.prevHash=self.getLatestBlock().hash
         block.mineBlock(self.difficulty)
@@ -55,7 +54,7 @@ class BlockChain():
     def createTransaction(self,transaction):
         self.pending.append(transaction)
     
-    def getBalance(self,address):
+    def getBalance(self,address):    # The balance is not stored inside a wallet, rather the balance is calculated by going over the whole chain and look for additions and subtractions from user wallet
         balance=0
         for block in self.chain[1:]: #Exclude the genesis Block
             for trans in block.transactions:
@@ -72,8 +71,9 @@ obj.createTransaction(Transaction('address2','address1',50))
 
 print("Mining...")
 obj.minePendingTransactions('vandan')
-sleep(3)
 obj.minePendingTransactions('vandan') # we need this transaction again because, the process of us getting a reward is also a transaction and we need to mine it. So we call this transaction so that the above transaction is processed
 print("\n UngaBunga Coins in Vandan's account:{} \n".format(obj.getBalance('vandan')))
+print("\n UngaBunga Coins in address1's account:{} \n".format(obj.getBalance('address1')))
+print("\n UngaBunga Coins in address2's account:{} \n".format(obj.getBalance('address2')))
 
 [print(str({'time':x.time,'data':[{'sender':y.sender,'receiver':y.receiver,'amount ':y.amount} for y in x.transactions],'previous hash':x.prevHash,'hash':x.hash,'nonce':x.nonce})+"\n") for x in obj.chain[1:]] # Printing the whole blockchain is a bit messy now since one block contains multiple transactions
