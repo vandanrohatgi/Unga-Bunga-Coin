@@ -15,3 +15,4 @@ I wanted to learn how blockchains work
 - Part1: We create a very basic Blockchain
 - Part2: We add Proof-of-Work feature
 - Part3: We finally create the UngabungaCoin, and add a reward system for miners
+- Part4: We now establish a wallet system and validation checks
