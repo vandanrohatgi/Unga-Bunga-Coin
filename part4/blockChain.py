@@ -14,7 +14,15 @@ class Transaction():
         if signingKey.getPublic() != self.sender:
             raise Exception("You cannot sign transactions for other wallets")
         hash=self.calculateHash()
-        self.signature=signingKey.sign(hash,'base64')
+        self.signature=signingKey.sign(hash)
+
+    def isValid(self,signingKey):
+        if self.sender=="Reward":
+            return True
+        if not self.signature or len(self.signature)==0:
+            raise Exception("No signature in this transaction!")
+        
+        return(signingKey.verify(self.signature,self.calculateHash))
         
 
 
