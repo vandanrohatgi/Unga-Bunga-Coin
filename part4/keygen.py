@@ -16,8 +16,18 @@ class blockchain_cryptography():
         #public_key=private_key.public_key()
         #pem = public_key.public_bytes(encoding=serialization.Encoding.PEM,format=serialization.PublicFormat.SubjectPublicKeyInfo)
         #print(pem)
-        return(binascii.hexlify(self.private_key.sign(hash,ec.ECDSA(hashes.SHA256()))))
+        self.signature=self.private_key.sign(hash.encode(),ec.ECDSA(hashes.SHA256()))
+        return(binascii.hexlify(self.signature).decode())
     
     def getPublic(self):
         key=self.public_key.public_bytes(encoding=serialization.Encoding.DER, format=serialization.PublicFormat.SubjectPublicKeyInfo)
         return(binascii.hexlify(key).decode())
+    
+    def verify(self,signature,data):
+        if binascii.unhexlify(signature.encode())!=self.signature:
+            return False
+        try:
+            self.public_key.verify(self.signature,data.encode(),ec.ECDSA(hashes.SHA256()))
+        except:
+            return(False)
+        return True

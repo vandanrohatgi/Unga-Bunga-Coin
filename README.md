@@ -2,7 +2,7 @@
 A meme coin just for learning purposes
 
 # What is this?
-In this project I try to recreate [This awesome series on creating blockchain using javascript](https://www.youtube.com/watch?v=zVqczFZr124&list=PLzvRQMJ9HDiTqZmbtFisdXFxul5k0F-Q4) in Python.
+In this project I try to recreate [This awesome series on creating blockchain using javascript](https://www.youtube.com/watch?v=zVqczFZr124&list=PLzvRQMJ9HDiTqZmbtFisdXFxul5k0F-Q4) in Python. I added some of my additions here and there. 
 
 # Why?
 
