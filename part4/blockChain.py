@@ -8,21 +8,22 @@ class Transaction():
         self.amount=amount
     
     def calculateHash(self):
-        return(hashlib.sha256(self.sender+self.receiver+str(self.amount)))
+        return(hashlib.sha256((self.sender+self.receiver+str(self.amount)).encode()).hexdigest())
 
     def signTransaction(self,signingKey):
+        self.signingKey=signingKey
         if signingKey.getPublic() != self.sender:
             raise Exception("You cannot sign transactions for other wallets")
         hash=self.calculateHash()
         self.signature=signingKey.sign(hash)
 
-    def isValid(self,signingKey):
-        if self.sender=="Reward":
+    def isValid(self):
+        if self.sender=="Reward":   # since miners getting rewarded is also a transaction, we declare it as a valid transaction
             return True
         if not self.signature or len(self.signature)==0:
             raise Exception("No signature in this transaction!")
         
-        return(signingKey.verify(self.signature,self.calculateHash))
+        return(self.signingKey.verify(self.signature,self.calculateHash()))
         
 
 
@@ -44,6 +45,13 @@ class Block():
             self.nonce+=1
             self.hash=self.calculateHash()
         print("Mined block  : "+self.hash)
+    
+    def hasValidTransactions(self):                       # to verify all transactions in this block are valid
+        for transaction in self.transactions:
+            if self.transactions.isValid(transaction.signingKey) == False:
+                return False
+        
+        return True
 
 
 
@@ -65,11 +73,16 @@ class BlockChain():
         block=Block(datetime.today().strftime('%d-%m-%Y-%H:%M:%S'),self.pending)
         block.prevHash=self.getLatestBlock().hash
         block.mineBlock(self.difficulty)
-        print("Mined Block: ",block.hash)
+        #print("Mined Block: ",block.hash)
         self.chain.append(block)
         self.pending=[Transaction('Reward',rewardAddress,self.reward)]
     
-    def createTransaction(self,transaction):
+    def addTransaction(self,transaction):
+        if not transaction.sender or not transaction.receiver:
+            raise Exception("Transaction must include sender and receiver address")
+        #print(transaction.isValid(transaction.signingKey))
+        if transaction.isValid()==False:
+            raise Exception("Cannot add invalid transaction to the chain")
         self.pending.append(transaction)
     
     def getBalance(self,address):    # The balance is not stored inside a wallet, rather the balance is calculated by going over the whole chain and look for additions and subtractions from user wallet
@@ -81,5 +94,18 @@ class BlockChain():
                 elif trans.receiver==address:
                     balance+=trans.amount
         return balance
+    
+    def validate(self):
+        for x in range(1,len(self.chain)):
+            current=self.chain[x]
+            prev=self.chain[x-1]
+            if current.hasValidTransactions == False:
+                return False
+            if current.hash !=current.calculateHash():
+                return False
+            if current.prevHash!=prev.hash:
+                return False
+        return True
+
 
 
